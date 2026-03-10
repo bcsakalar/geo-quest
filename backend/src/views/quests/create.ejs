@@ -1,0 +1,140 @@
+<!-- Yeni Görev Oluştur -->
+<% if (error) { %>
+    <div class="alert alert-danger"><i class="bi bi-exclamation-circle me-1"></i> <%= error %></div>
+<% } %>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-geo-alt me-2"></i>Haritadan Konum Seç</h5>
+            </div>
+            <div class="card-body p-0">
+                <div id="map" style="height: 450px; width: 100%;"></div>
+            </div>
+            <div class="card-footer bg-white">
+                <small class="text-muted">Haritaya tıklayarak konum belirleyin</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Görev Bilgileri</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/admin/quests/create" id="questForm">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Başlık <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="title" name="title"
+                               placeholder="Örn: Galata Kulesi Fotoğrafı" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Açıklama</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"
+                                  placeholder="Görev açıklaması..."></textarea>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label for="type" class="form-label">Görev Tipi <span class="text-danger">*</span></label>
+                            <select class="form-select" id="type" name="type" required>
+                                <option value="photo">Fotoğraf Çek</option>
+                                <option value="question">Soru Cevapla</option>
+                                <option value="qr_code">QR Kod Okut</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="points" class="form-label">Puan</label>
+                            <input type="number" class="form-control" id="points" name="points" value="10" min="1">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="radius_meters" class="form-label">Yarıçap (m)</label>
+                            <input type="number" class="form-control" id="radius_meters" name="radius_meters" value="100" min="10">
+                        </div>
+                    </div>
+
+                    <!-- Konum -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="latitude" class="form-label">Enlem <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="latitude" name="latitude" placeholder="41.0082" required readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="longitude" class="form-label">Boylam <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="longitude" name="longitude" placeholder="28.9784" required readonly>
+                        </div>
+                    </div>
+
+                    <!-- Soru tipi alanları -->
+                    <div id="questionFields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="question" class="form-label">Soru</label>
+                            <input type="text" class="form-control" id="question" name="question"
+                                   placeholder="Örn: Bu yapı kaç yılında inşa edildi?">
+                        </div>
+                        <div class="mb-3">
+                            <label for="answer" class="form-label">Doğru Cevap</label>
+                            <input type="text" class="form-control" id="answer" name="answer"
+                                   placeholder="Örn: 1453">
+                        </div>
+                    </div>
+
+                    <!-- QR tipi alanları -->
+                    <div id="qrFields" style="display: none;">
+                        <div class="mb-3">
+                            <label for="qr_data" class="form-label">Beklenen QR Verisi</label>
+                            <input type="text" class="form-control" id="qr_data" name="qr_data"
+                                   placeholder="Örn: GEOQUEST-KADIKOY-2026">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 py-2">
+                        <i class="bi bi-plus-circle me-1"></i> Görevi Oluştur
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Harita başlat — İstanbul merkez
+    const map = L.map('map').setView([41.0082, 28.9784], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = null;
+
+    map.on('click', function(e) {
+        const { lat, lng } = e.latlng;
+        document.getElementById('latitude').value = lat.toFixed(6);
+        document.getElementById('longitude').value = lng.toFixed(6);
+
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            marker.on('dragend', function(ev) {
+                const pos = ev.target.getLatLng();
+                document.getElementById('latitude').value = pos.lat.toFixed(6);
+                document.getElementById('longitude').value = pos.lng.toFixed(6);
+            });
+        }
+    });
+
+    // Görev tipine göre alanları göster/gizle
+    const typeSelect = document.getElementById('type');
+    const questionFields = document.getElementById('questionFields');
+    const qrFields = document.getElementById('qrFields');
+
+    typeSelect.addEventListener('change', function() {
+        questionFields.style.display = this.value === 'question' ? 'block' : 'none';
+        qrFields.style.display = this.value === 'qr_code' ? 'block' : 'none';
+    });
+});
+</script>

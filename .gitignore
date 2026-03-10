@@ -1,0 +1,57 @@
+# ──── Environment & Secrets ────
+.env
+.env.local
+.env.production
+
+# ──── Node.js ────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+*.log
+
+# ──── Uploads (user generated) ────
+backend/src/public/uploads/*
+!backend/src/public/uploads/.gitkeep
+
+# ──── Docker volumes ────
+pgdata/
+
+# ──── OS ────
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# ──── IDE ────
+.vscode/
+.idea/
+*.iml
+*.code-workspace
+
+# ──── Flutter / Dart ────
+mobile/geo_quest/.dart_tool/
+mobile/geo_quest/.packages
+mobile/geo_quest/build/
+mobile/geo_quest/.flutter-plugins
+mobile/geo_quest/.flutter-plugins-dependencies
+mobile/geo_quest/.metadata
+mobile/geo_quest/pubspec.lock
+mobile/geo_quest/android/.gradle/
+mobile/geo_quest/android/.kotlin/
+mobile/geo_quest/android/local.properties
+mobile/geo_quest/android/app/build/
+mobile/geo_quest/android/build/
+mobile/geo_quest/android/key.properties
+mobile/geo_quest/android/*.jks
+mobile/geo_quest/android/*.keystore
+mobile/geo_quest/ios/Pods/
+mobile/geo_quest/ios/.symlinks/
+
+# ──── APK / Build outputs ────
+*.apk
+*.aab
+
+# ──── Misc ────
+DEPLOY.md

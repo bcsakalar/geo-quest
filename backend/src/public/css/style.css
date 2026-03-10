@@ -1,0 +1,26 @@
+/* ── Geo-Quest Admin Custom Styles ── */
+
+#sidebar .nav-link:hover {
+    background-color: rgba(25, 135, 84, 0.2);
+    border-radius: 6px;
+}
+
+#sidebar .nav-link.active {
+    border-radius: 6px;
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.table th {
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Leaflet map fix for Bootstrap */
+.leaflet-container {
+    border-radius: 0 0 12px 12px;
+}

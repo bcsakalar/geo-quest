@@ -1,0 +1,85 @@
+<!-- Görev Listesi -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div></div>
+    <a href="/admin/quests/create" class="btn btn-success">
+        <i class="bi bi-plus-circle me-1"></i> Yeni Görev Ekle
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <% if (quests.length === 0) { %>
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-flag fs-1"></i>
+                <p class="mt-2">Henüz görev eklenmemiş</p>
+                <a href="/admin/quests/create" class="btn btn-success">İlk Görevi Ekle</a>
+            </div>
+        <% } else { %>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Başlık</th>
+                            <th>Tip</th>
+                            <th>Puan</th>
+                            <th>Konum</th>
+                            <th>Durum</th>
+                            <th>Oluşturan</th>
+                            <th>Tarih</th>
+                            <th class="text-end">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% quests.forEach(q => { %>
+                            <tr>
+                                <td><%= q.id %></td>
+                                <td class="fw-semibold">
+                                    <%= q.title %>
+                                    <% if (q.source === 'ai') { %>
+                                        <span class="badge bg-purple" style="background-color: #8b5cf6;">AI</span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <% if (q.type === 'photo') { %>
+                                        <span class="badge bg-info"><i class="bi bi-camera me-1"></i>Fotoğraf</span>
+                                    <% } else if (q.type === 'question') { %>
+                                        <span class="badge bg-primary"><i class="bi bi-question-circle me-1"></i>Soru</span>
+                                    <% } else { %>
+                                        <span class="badge bg-dark"><i class="bi bi-qr-code me-1"></i>QR Kod</span>
+                                    <% } %>
+                                </td>
+                                <td><span class="badge bg-warning text-dark"><%= q.points %> puan</span></td>
+                                <td>
+                                    <small class="text-muted">
+                                        <%= parseFloat(q.latitude).toFixed(4) %>, <%= parseFloat(q.longitude).toFixed(4) %>
+                                    </small>
+                                </td>
+                                <td>
+                                    <% if (q.is_active) { %>
+                                        <span class="badge bg-success">Aktif</span>
+                                    <% } else { %>
+                                        <span class="badge bg-secondary">Pasif</span>
+                                    <% } %>
+                                </td>
+                                <td><%= q.creator_name || '-' %></td>
+                                <td><%= new Date(q.created_at).toLocaleDateString('tr-TR') %></td>
+                                <td class="text-end">
+                                    <a href="/admin/quests/<%= q.id %>/edit" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <form method="POST" action="/admin/quests/<%= q.id %>/delete"
+                                          class="d-inline" onsubmit="return confirm('Bu görevi silmek istediğinize emin misiniz?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</div>
