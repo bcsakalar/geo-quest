@@ -125,28 +125,34 @@ class _QuestDetailScreenState extends State<QuestDetailScreen> {
             children: [
               const Icon(Icons.auto_awesome, color: Colors.deepPurple),
               const SizedBox(width: 8),
-              Text('AI Değerlendirme: $aiScore/100'),
+              Expanded(
+                child: Text('AI Değerlendirme: $aiScore/100'),
+              ),
             ],
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(aiEvaluation.toString()),
-              if (streak != null && (streak['multiplier'] ?? 1.0) > 1.0) ...[
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(aiEvaluation.toString()),
+                if (streak != null && (streak['multiplier'] ?? 1.0) > 1.0) ...[
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     const Icon(Icons.local_fire_department, color: Colors.orange, size: 16),
                     const SizedBox(width: 4),
-                    Text(
-                      '${streak['multiplier']}x streak çarpanı uygulandı!',
-                      style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Text(
+                        '${streak['multiplier']}x streak çarpanı uygulandı!',
+                        style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
               ],
-            ],
+              ],
+            ),
           ),
           actions: [
             TextButton(

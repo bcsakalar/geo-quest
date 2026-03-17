@@ -24,13 +24,18 @@ const geminiService = {
     const response = await ai.models.generateContent({
       model: MODEL,
       contents: `Koordinatlar: (${lat}, ${lng}) yakınında 3 adet benzersiz konum tabanlı görev üret.
-Görevler eğlenceli dış mekan aktiviteleri olmalı.
-Mevcut görev başlıkları (bunlardan farklı olmalı): ${existingTitles.join(', ') || 'yok'}.
-Her görevi verilen koordinatlardan 200m-2km arasına yerleştir.
+
+ÖNEMLİ KURALLAR:
+1. Önce bu koordinatların hangi şehir, ilçe ve mahallede olduğunu belirle.
+2. O bölgedeki GERÇEK yerler (parklar, camiler, müzeler, meydanlar, heykeller, tarihi yapılar, doğal alanlar vb.) hakkında görevler oluştur.
+3. Görev başlığı, açıklaması ve soruları mutlaka o bölgeyle DOĞRUDAN İLGİLİ olmalı. Genel/jenerik görevler YASAK.
+4. Fotoğraf görevleri: kullanıcıdan o bölgedeki belirli bir yapı, heykel, park veya doğal güzelliğin fotoğrafını iste.
+5. Soru görevleri: o bölgenin tarihi, kültürü veya coğrafyasıyla ilgili spesifik bir soru sor.
+6. Her görevi verilen koordinatlardan 200m-2km arasına yerleştir.
+7. Puanlar zorluk seviyesine göre 10-50 arasında olmalı.
+
 Görev tiplerini 'photo' ve 'question' olarak karıştır.
-Fotoğraf görevleri için: kullanıcının ne fotoğrafı çekmesi gerektiğini açıkla.
-Soru görevleri için: bölge/doğa/kültür hakkında bir soru ve cevabını ver.
-Puanlar zorluk seviyesine göre 10-50 arasında olmalı.`,
+Mevcut görev başlıkları (bunlardan farklı olmalı): ${existingTitles.join(', ') || 'yok'}.`,
       config: {
         responseMimeType: 'application/json',
         responseSchema: {
@@ -57,7 +62,7 @@ Puanlar zorluk seviyesine göre 10-50 arasında olmalı.`,
           },
           required: ['quests'],
         },
-        systemInstruction: 'Sen Geo-Quest adlı konum tabanlı macera oyunu için yaratıcı bir görev tasarımcısısın. Kullanıcıları çevreyi keşfetmeye teşvik eden eğlenceli, eğitici ve ilgi çekici görevler üret. Tüm metinler Türkçe olmalı. Görevler gerçekçi ve yapılabilir olmalı. Fotoğraf görevlerinde question ve answer null olmalı. Soru görevlerinde question soruyu, answer ise cevabı içermeli.',
+        systemInstruction: 'Sen Geo-Quest adlı konum tabanlı macera oyunu için yaratıcı bir görev tasarımcısısın. Verilen koordinatları kullanarak o bölgedeki GERÇEK yerleri (cadde, park, tarihi yapı, doğal alan vb.) tespit et ve bunlara özel görevler üret. Görevler jenerik olmamalı, mutlaka o konumla doğrudan ilişkili olmalı. Tüm metinler Türkçe olmalı. Görevler gerçekçi ve yapılabilir olmalı. Fotoğraf görevlerinde question ve answer null olmalı. Soru görevlerinde question soruyu, answer ise cevabı içermeli.',
       },
     });
 
